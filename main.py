@@ -9,6 +9,7 @@ from functools import wraps  # 用来def admin_only
 from werkzeug.security import generate_password_hash, check_password_hash  # 加密密码 + 对比密码
 from sqlalchemy.orm import relationship  # 让一个tab(user)中的用户，可以和多个comments或者是blogs链接起来
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm  # 调用，另外一个单独的py文件
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -23,7 +24,7 @@ login_manager.init_app(app)
 # 后来又增加了一个表格，comment，每增加一个表格，都需要删掉db文件，重新开始。
 # 注意，删除的时候，所有3个tab的内容都会被删除，需要重新开始
 # 删除的时候，不要选择safe。
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URL', "sqlite:///posts.db")
 db = SQLAlchemy()
 db.init_app(app)
 
@@ -262,4 +263,4 @@ def contact():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5002)
+    app.run(debug=False, port=5002)
