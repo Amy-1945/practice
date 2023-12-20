@@ -1,0 +1,66 @@
+{% include "header.html" %}
+
+<!-- Page Header-->
+<header
+  class="masthead"
+  style="background-image: url('../static/assets/img/home-bg.jpg')"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="site-heading">
+          <h1>Angela's Blog</h1>
+          <span class="subheading">A collection of random musings.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- Main Content-->
+<div class="container px-4 px-lg-5">
+  <div class="row gx-4 gx-lg-5 justify-content-center">
+    <div class="col-md-10 col-lg-8 col-xl-7">
+      <!-- Post preview-->
+      {% for post in all_posts %}
+      <div class="post-preview">
+        <a href="{{ url_for('show_post', post_id=post.id) }}">
+          <h2 class="post-title">{{ post.title }}</h2>
+          <h3 class="post-subtitle">{{ post.subtitle }}</h3>
+        </a>
+        <p class="post-meta">
+          Posted by
+<!--因为BlogPost是User的一个child，继承了User的特性
+所以，这里的 post.author.name 表示从 BlogPost 表中获取作者（User 对象），然后再从该 User 对象中获取 name 属性。
+如果你直接使用 post.author，你将得到一个指向 User 对象的引用，而 post.author.name 则是访问该引用的 name 属性。-->
+          <a href="#">{{post.author.name}}</a>
+          on {{post.date}}
+          <!-- TODO: Only show delete button if user id is 1 (admin user) -->
+          {% if current_user.id == 1: %}
+          <a href="{{url_for('delete_post', post_id=post.id) }}">✘</a>
+          {% endif %}
+        </p>
+      </div>
+      <!-- Divider-->
+      <hr class="my-4" />
+      {% endfor %}
+
+      <!-- New Post -->
+      <!-- TODO: Only show Create Post button if user id is 1 (admin user) -->
+      {% if current_user.id == 1: %}
+      <div class="d-flex justify-content-end mb-4">
+        <a
+          class="btn btn-primary float-right"
+          href="{{url_for('add_new_post')}}"
+          >Create New Post</a
+        >
+      </div>
+      {% endif %}
+      <!-- Pager-->
+      <div class="d-flex justify-content-end mb-4">
+        <a class="btn btn-secondary text-uppercase" href="#!">Older Posts →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}
